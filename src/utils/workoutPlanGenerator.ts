@@ -67,45 +67,75 @@ export const generateWorkoutPlan = (
       .sort((a, b) => a.priority - b.priority);
   };
 
-  // Create focus-weighted workout plans
-  const createFocusWeightedPlan = (): WorkoutDay[] => {
+  // Get optimal exercise selection ensuring minimum counts
+  const getOptimalExercises = (focusAreas: FocusArea[], targetCount: number): Exercise[] => {
+    const selectedExercises: Exercise[] = [];
+    const usedExerciseIds = new Set<string>();
+
+    // First, get top priority exercises from each focus area
+    for (const focus of focusAreas) {
+      const focusExercises = getExercisesByFocus(focus);
+      const topExercise = focusExercises.find(ex => !usedExerciseIds.has(ex.id));
+      if (topExercise) {
+        selectedExercises.push(topExercise);
+        usedExerciseIds.add(topExercise.id);
+      }
+    }
+
+    // Fill remaining slots with best available exercises
+    const allAvailableExercises = exercises
+      .filter(ex => !usedExerciseIds.has(ex.id))
+      .filter(ex => focusAreas.some(focus => ex.targetAreas.includes(focus)))
+      .sort((a, b) => a.priority - b.priority);
+
+    while (selectedExercises.length < targetCount && allAvailableExercises.length > 0) {
+      const nextBest = allAvailableExercises.shift();
+      if (nextBest && !usedExerciseIds.has(nextBest.id)) {
+        selectedExercises.push(nextBest);
+        usedExerciseIds.add(nextBest.id);
+      }
+    }
+
+    return selectedExercises;
+  };
+
+  // Create focus-weighted workout plans with optimal exercise distribution
+  const createOptimalPlan = (): WorkoutDay[] => {
     const plans: { [key: number]: WorkoutDay[] } = {
-      2: create2DayPlan(),
-      3: create3DayPlan(),
-      4: create4DayPlan(),
-      5: create5DayPlan()
+      2: create2DayOptimalPlan(),
+      3: create3DayOptimalPlan(),
+      4: create4DayOptimalPlan(),
+      5: create5DayOptimalPlan()
     };
 
     return plans[workoutDays] || [];
   };
 
-  function create2DayPlan(): WorkoutDay[] {
-    const primaryExercises = getExercisesByFocus(primaryFocus).slice(0, 3);
+  function create2DayOptimalPlan(): WorkoutDay[] {
+    // Beginner Split: 4 exercises per day (total 8)
     const supportingAreas = FOCUS_RELATIONSHIPS[primaryFocus].supporting;
-    const supportingExercises = supportingAreas.flatMap(area => 
-      getExercisesByFocus(area).slice(0, 1)
-    );
+    const allFocusAreas = [primaryFocus, ...supportingAreas];
 
     return [
       {
         day: 1,
-        name: `Monday - ${getFocusDisplayName(primaryFocus)} Focus (Heavy)`,
+        name: `Monday - ${getFocusDisplayName(primaryFocus)} Power (Heavy)`,
         focus: `Primary ${getFocusDisplayName(primaryFocus)} training with supporting work`,
-        exercises: [...primaryExercises.slice(0, 2), ...supportingExercises.slice(0, 2)]
+        exercises: getOptimalExercises([primaryFocus, supportingAreas[0]], 4)
           .map(ex => applyDayTypeModifications(ex, 'heavy'))
       },
       {
         day: 2,
         name: `Thursday - ${getFocusDisplayName(primaryFocus)} Volume + Support`,
         focus: `Volume work and supporting muscle groups`,
-        exercises: [...primaryExercises.slice(1, 3), ...supportingExercises.slice(1, 3)]
+        exercises: getOptimalExercises([primaryFocus, supportingAreas[1], supportingAreas[2]], 4)
           .map(ex => applyDayTypeModifications(ex, 'volume'))
       }
     ];
   }
 
-  function create3DayPlan(): WorkoutDay[] {
-    const primaryExercises = getExercisesByFocus(primaryFocus);
+  function create3DayOptimalPlan(): WorkoutDay[] {
+    // Balanced Plan: 4, 4, 3 exercises (total 11)
     const supportingAreas = FOCUS_RELATIONSHIPS[primaryFocus].supporting;
 
     return [
@@ -113,32 +143,28 @@ export const generateWorkoutPlan = (
         day: 1,
         name: `Monday - ${getFocusDisplayName(primaryFocus)} Heavy`,
         focus: `Maximum strength ${getFocusDisplayName(primaryFocus).toLowerCase()}`,
-        exercises: primaryExercises.slice(0, 3)
+        exercises: getOptimalExercises([primaryFocus, supportingAreas[0]], 4)
           .map(ex => applyDayTypeModifications(ex, 'heavy'))
       },
       {
         day: 2,
         name: `Wednesday - ${getFocusDisplayName(supportingAreas[0])} + ${getFocusDisplayName(supportingAreas[1])}`,
         focus: `Supporting muscle groups and technique`,
-        exercises: [
-          ...getExercisesByFocus(supportingAreas[0]).slice(0, 2),
-          ...getExercisesByFocus(supportingAreas[1]).slice(0, 2)
-        ].map(ex => applyDayTypeModifications(ex, 'compound'))
+        exercises: getOptimalExercises([supportingAreas[0], supportingAreas[1]], 4)
+          .map(ex => applyDayTypeModifications(ex, 'compound'))
       },
       {
         day: 3,
         name: `Friday - ${getFocusDisplayName(primaryFocus)} Volume`,
         focus: `High volume ${getFocusDisplayName(primaryFocus).toLowerCase()} work`,
-        exercises: [
-          ...primaryExercises.slice(2, 4),
-          ...getExercisesByFocus(supportingAreas[2]).slice(0, 1)
-        ].map(ex => applyDayTypeModifications(ex, 'volume'))
+        exercises: getOptimalExercises([primaryFocus, supportingAreas[2]], 3)
+          .map(ex => applyDayTypeModifications(ex, 'volume'))
       }
     ];
   }
 
-  function create4DayPlan(): WorkoutDay[] {
-    const primaryExercises = getExercisesByFocus(primaryFocus);
+  function create4DayOptimalPlan(): WorkoutDay[] {
+    // Intermediate: Option 1 - 3,3,4,4 exercises (total 14)
     const supportingAreas = FOCUS_RELATIONSHIPS[primaryFocus].supporting;
 
     return [
@@ -146,88 +172,72 @@ export const generateWorkoutPlan = (
         day: 1,
         name: `Monday - ${getFocusDisplayName(primaryFocus)} Heavy`,
         focus: `Maximum strength focus`,
-        exercises: primaryExercises.slice(0, 3)
-          .map(ex => applyDayTypeModifications(ex, 'heavy'))
-      },
-      {
-        day: 2,
-        name: `Tuesday - ${getFocusDisplayName(supportingAreas[0])} + Recovery`,
-        focus: `Supporting work and recovery`,
-        exercises: [
-          ...getExercisesByFocus(supportingAreas[0]).slice(0, 2),
-          ...getExercisesByFocus(supportingAreas[1]).slice(0, 1)
-        ].map(ex => applyDayTypeModifications(ex, 'recovery'))
-      },
-      {
-        day: 3,
-        name: `Thursday - ${getFocusDisplayName(primaryFocus)} Volume`,
-        focus: `High volume technique work`,
-        exercises: [
-          ...primaryExercises.slice(1, 4),
-          ...getExercisesByFocus(supportingAreas[2]).slice(0, 1)
-        ].map(ex => applyDayTypeModifications(ex, 'volume'))
-      },
-      {
-        day: 4,
-        name: `Friday - ${getFocusDisplayName(supportingAreas[1])} + ${getFocusDisplayName(supportingAreas[2])}`,
-        focus: `Compound accessory work`,
-        exercises: [
-          ...getExercisesByFocus(supportingAreas[1]).slice(0, 2),
-          ...getExercisesByFocus(supportingAreas[2]).slice(0, 2)
-        ].map(ex => applyDayTypeModifications(ex, 'compound'))
-      }
-    ];
-  }
-
-  function create5DayPlan(): WorkoutDay[] {
-    const primaryExercises = getExercisesByFocus(primaryFocus);
-    const supportingAreas = FOCUS_RELATIONSHIPS[primaryFocus].supporting;
-
-    return [
-      {
-        day: 1,
-        name: `Monday - ${getFocusDisplayName(primaryFocus)} Heavy`,
-        focus: `Maximum strength focus`,
-        exercises: primaryExercises.slice(0, 3)
+        exercises: getOptimalExercises([primaryFocus], 3)
           .map(ex => applyDayTypeModifications(ex, 'heavy'))
       },
       {
         day: 2,
         name: `Tuesday - ${getFocusDisplayName(supportingAreas[0])} Focus`,
         focus: `Supporting muscle group emphasis`,
-        exercises: [
-          ...getExercisesByFocus(supportingAreas[0]).slice(0, 3),
-          ...getExercisesByFocus(supportingAreas[1]).slice(0, 1)
-        ].map(ex => applyDayTypeModifications(ex, 'compound'))
+        exercises: getOptimalExercises([supportingAreas[0]], 3)
+          .map(ex => applyDayTypeModifications(ex, 'recovery'))
+      },
+      {
+        day: 3,
+        name: `Thursday - ${getFocusDisplayName(primaryFocus)} Volume`,
+        focus: `High volume technique work`,
+        exercises: getOptimalExercises([primaryFocus, supportingAreas[1]], 4)
+          .map(ex => applyDayTypeModifications(ex, 'volume'))
+      },
+      {
+        day: 4,
+        name: `Friday - ${getFocusDisplayName(supportingAreas[1])} + ${getFocusDisplayName(supportingAreas[2])}`,
+        focus: `Compound accessory work`,
+        exercises: getOptimalExercises([supportingAreas[1], supportingAreas[2]], 4)
+          .map(ex => applyDayTypeModifications(ex, 'compound'))
+      }
+    ];
+  }
+
+  function create5DayOptimalPlan(): WorkoutDay[] {
+    // Advanced: 4,3,4,3,4 exercises (total 18)
+    const supportingAreas = FOCUS_RELATIONSHIPS[primaryFocus].supporting;
+
+    return [
+      {
+        day: 1,
+        name: `Monday - ${getFocusDisplayName(primaryFocus)} Heavy`,
+        focus: `Maximum strength focus`,
+        exercises: getOptimalExercises([primaryFocus, supportingAreas[0]], 4)
+          .map(ex => applyDayTypeModifications(ex, 'heavy'))
+      },
+      {
+        day: 2,
+        name: `Tuesday - ${getFocusDisplayName(supportingAreas[0])} Focus`,
+        focus: `Supporting muscle group emphasis`,
+        exercises: getOptimalExercises([supportingAreas[0]], 3)
+          .map(ex => applyDayTypeModifications(ex, 'compound'))
       },
       {
         day: 3,
         name: `Wednesday - ${getFocusDisplayName(primaryFocus)} Volume`,
         focus: `High volume technique work`,
-        exercises: [
-          ...primaryExercises.slice(2, 5),
-          ...getExercisesByFocus(supportingAreas[2]).slice(0, 1)
-        ].map(ex => applyDayTypeModifications(ex, 'volume'))
+        exercises: getOptimalExercises([primaryFocus, supportingAreas[1]], 4)
+          .map(ex => applyDayTypeModifications(ex, 'volume'))
       },
       {
         day: 4,
         name: `Thursday - ${getFocusDisplayName(supportingAreas[1])} + ${getFocusDisplayName(supportingAreas[2])}`,
         focus: `Rotation and support work`,
-        exercises: [
-          ...getExercisesByFocus(supportingAreas[1]).slice(0, 2),
-          ...getExercisesByFocus(supportingAreas[2]).slice(0, 2)
-        ].map(ex => applyDayTypeModifications(ex, 'compound'))
+        exercises: getOptimalExercises([supportingAreas[1], supportingAreas[2]], 3)
+          .map(ex => applyDayTypeModifications(ex, 'compound'))
       },
       {
         day: 5,
-        name: `Friday - Recovery + Conditioning`,
-        focus: `Light work and elbow conditioning`,
-        exercises: [
-          ...primaryExercises.slice(3, 5),
-          ...supportingAreas.flatMap(area => 
-            getExercisesByFocus(area).slice(2, 3)
-          ).slice(0, 2)
-        ].map(ex => applyDayTypeModifications(ex, 'recovery'))
+        name: `Friday - ${getFocusDisplayName(primaryFocus)} Power + Conditioning`,
+        focus: `Power work and elbow conditioning`,
+        exercises: getOptimalExercises([primaryFocus, supportingAreas[0], supportingAreas[2]], 4)
+          .map(ex => applyDayTypeModifications(ex, 'recovery'))
       }
     ];
   }
@@ -255,5 +265,5 @@ export const generateWorkoutPlan = (
     };
   }
 
-  return createFocusWeightedPlan();
+  return createOptimalPlan();
 };
