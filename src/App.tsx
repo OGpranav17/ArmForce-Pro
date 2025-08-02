@@ -146,7 +146,7 @@ function App() {
         </div>
 
         {/* Workout Plan */}
-        {canGeneratePlan && (
+        {canGeneratePlan && workoutDays > 0 && (
           <div className="max-w-6xl mx-auto mb-8">
             <div className="text-center mb-8">
               <div className="bg-gradient-to-r from-orange-500/10 to-blue-500/10 backdrop-blur-sm border border-orange-500/20 rounded-2xl p-8 mb-6">

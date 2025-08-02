@@ -177,10 +177,10 @@ export const generateWorkoutPlan = (
       },
       {
         day: 2,
-        name: `Tuesday - ${getFocusDisplayName(supportingAreas[0])} Focus`,
-        focus: `Supporting muscle group emphasis`,
-        exercises: getOptimalExercises([supportingAreas[0]], 3)
-          .map(ex => applyDayTypeModifications(ex, 'recovery'))
+        name: `Tuesday - ${getFocusDisplayName(supportingAreas[0])} + ${getFocusDisplayName(supportingAreas[1])} Focus`,
+        focus: `Supporting muscle groups emphasis`,
+        exercises: getOptimalExercises([supportingAreas[0], supportingAreas[1]], 4)
+          .map(ex => applyDayTypeModifications(ex, 'compound'))
       },
       {
         day: 3,
@@ -191,16 +191,16 @@ export const generateWorkoutPlan = (
       },
       {
         day: 4,
-        name: `Friday - ${getFocusDisplayName(supportingAreas[1])} + ${getFocusDisplayName(supportingAreas[2])}`,
+        name: `Friday - ${getFocusDisplayName(supportingAreas[2])} + Recovery`,
         focus: `Compound accessory work`,
-        exercises: getOptimalExercises([supportingAreas[1], supportingAreas[2]], 4)
+        exercises: getOptimalExercises([supportingAreas[2], primaryFocus], 3)
           .map(ex => applyDayTypeModifications(ex, 'compound'))
       }
     ];
   }
 
   function create5DayOptimalPlan(): WorkoutDay[] {
-    // Advanced: 4,3,4,3,4 exercises (total 18)
+    // Advanced: 4,4,4,3,4 exercises (total 19)
     const supportingAreas = FOCUS_RELATIONSHIPS[primaryFocus].supporting;
 
     return [
@@ -213,30 +213,30 @@ export const generateWorkoutPlan = (
       },
       {
         day: 2,
-        name: `Tuesday - ${getFocusDisplayName(supportingAreas[0])} Focus`,
-        focus: `Supporting muscle group emphasis`,
-        exercises: getOptimalExercises([supportingAreas[0]], 3)
+        name: `Tuesday - ${getFocusDisplayName(supportingAreas[0])} + ${getFocusDisplayName(supportingAreas[1])} Focus`,
+        focus: `Supporting muscle groups emphasis`,
+        exercises: getOptimalExercises([supportingAreas[0], supportingAreas[1]], 4)
           .map(ex => applyDayTypeModifications(ex, 'compound'))
       },
       {
         day: 3,
         name: `Wednesday - ${getFocusDisplayName(primaryFocus)} Volume`,
         focus: `High volume technique work`,
-        exercises: getOptimalExercises([primaryFocus, supportingAreas[1]], 4)
+        exercises: getOptimalExercises([primaryFocus, supportingAreas[2]], 4)
           .map(ex => applyDayTypeModifications(ex, 'volume'))
       },
       {
         day: 4,
-        name: `Thursday - ${getFocusDisplayName(supportingAreas[1])} + ${getFocusDisplayName(supportingAreas[2])}`,
+        name: `Thursday - ${getFocusDisplayName(supportingAreas[2])} Specialization`,
         focus: `Rotation and support work`,
-        exercises: getOptimalExercises([supportingAreas[1], supportingAreas[2]], 3)
+        exercises: getOptimalExercises([supportingAreas[2], supportingAreas[1]], 3)
           .map(ex => applyDayTypeModifications(ex, 'compound'))
       },
       {
         day: 5,
         name: `Friday - ${getFocusDisplayName(primaryFocus)} Power + Conditioning`,
         focus: `Power work and elbow conditioning`,
-        exercises: getOptimalExercises([primaryFocus, supportingAreas[0], supportingAreas[2]], 4)
+        exercises: getOptimalExercises([primaryFocus, supportingAreas[0]], 4)
           .map(ex => applyDayTypeModifications(ex, 'recovery'))
       }
     ];
