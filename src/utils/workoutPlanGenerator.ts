@@ -72,27 +72,30 @@ export const generateWorkoutPlan = (
     const selectedExercises: Exercise[] = [];
     const usedExerciseIds = new Set<string>();
 
-    // First, get top priority exercises from each focus area
-    for (const focus of focusAreas) {
-      const focusExercises = getExercisesByFocus(focus);
-      const topExercise = focusExercises.find(ex => !usedExerciseIds.has(ex.id));
-      if (topExercise) {
-        selectedExercises.push(topExercise);
-        usedExerciseIds.add(topExercise.id);
-      }
-    }
-
-    // Fill remaining slots with best available exercises
-    const allAvailableExercises = exercises
-      .filter(ex => !usedExerciseIds.has(ex.id))
+    // Get all available exercises for the focus areas, sorted by priority
+    const availableExercises = exercises
       .filter(ex => focusAreas.some(focus => ex.targetAreas.includes(focus)))
       .sort((a, b) => a.priority - b.priority);
 
-    while (selectedExercises.length < targetCount && allAvailableExercises.length > 0) {
-      const nextBest = allAvailableExercises.shift();
-      if (nextBest && !usedExerciseIds.has(nextBest.id)) {
-        selectedExercises.push(nextBest);
-        usedExerciseIds.add(nextBest.id);
+    // Select exercises ensuring we get the best ones first
+    for (const exercise of availableExercises) {
+      if (selectedExercises.length >= targetCount) break;
+      if (!usedExerciseIds.has(exercise.id)) {
+        selectedExercises.push(exercise);
+        usedExerciseIds.add(exercise.id);
+      }
+    }
+
+    // If we don't have enough exercises, fill with any available exercises
+    if (selectedExercises.length < targetCount) {
+      const remainingExercises = exercises
+        .filter(ex => !usedExerciseIds.has(ex.id))
+        .sort((a, b) => a.priority - b.priority);
+      
+      for (const exercise of remainingExercises) {
+        if (selectedExercises.length >= targetCount) break;
+        selectedExercises.push(exercise);
+        usedExerciseIds.add(exercise.id);
       }
     }
 
@@ -135,7 +138,7 @@ export const generateWorkoutPlan = (
   }
 
   function create3DayOptimalPlan(): WorkoutDay[] {
-    // Balanced Plan: 4, 4, 3 exercises (total 11)
+    // Balanced Plan: 4, 4, 4 exercises (total 12)
     const supportingAreas = FOCUS_RELATIONSHIPS[primaryFocus].supporting;
 
     return [
@@ -157,14 +160,14 @@ export const generateWorkoutPlan = (
         day: 3,
         name: `Friday - ${getFocusDisplayName(primaryFocus)} Volume`,
         focus: `High volume ${getFocusDisplayName(primaryFocus).toLowerCase()} work`,
-        exercises: getOptimalExercises([primaryFocus, supportingAreas[2]], 3)
+        exercises: getOptimalExercises([primaryFocus, supportingAreas[2]], 4)
           .map(ex => applyDayTypeModifications(ex, 'volume'))
       }
     ];
   }
 
   function create4DayOptimalPlan(): WorkoutDay[] {
-    // Intermediate: Option 1 - 3,3,4,4 exercises (total 14)
+    // Intermediate: 4,4,4,4 exercises (total 16)
     const supportingAreas = FOCUS_RELATIONSHIPS[primaryFocus].supporting;
 
     return [
@@ -172,7 +175,7 @@ export const generateWorkoutPlan = (
         day: 1,
         name: `Monday - ${getFocusDisplayName(primaryFocus)} Heavy`,
         focus: `Maximum strength focus`,
-        exercises: getOptimalExercises([primaryFocus], 3)
+        exercises: getOptimalExercises([primaryFocus, supportingAreas[0]], 4)
           .map(ex => applyDayTypeModifications(ex, 'heavy'))
       },
       {
@@ -193,14 +196,14 @@ export const generateWorkoutPlan = (
         day: 4,
         name: `Friday - ${getFocusDisplayName(supportingAreas[2])} + Recovery`,
         focus: `Compound accessory work`,
-        exercises: getOptimalExercises([supportingAreas[2], primaryFocus], 3)
+        exercises: getOptimalExercises([supportingAreas[2], primaryFocus], 4)
           .map(ex => applyDayTypeModifications(ex, 'compound'))
       }
     ];
   }
 
   function create5DayOptimalPlan(): WorkoutDay[] {
-    // Advanced: 4,4,4,3,4 exercises (total 19)
+    // Advanced: 4,4,4,4,4 exercises (total 20)
     const supportingAreas = FOCUS_RELATIONSHIPS[primaryFocus].supporting;
 
     return [
@@ -229,7 +232,7 @@ export const generateWorkoutPlan = (
         day: 4,
         name: `Thursday - ${getFocusDisplayName(supportingAreas[2])} Specialization`,
         focus: `Rotation and support work`,
-        exercises: getOptimalExercises([supportingAreas[2], supportingAreas[1]], 3)
+        exercises: getOptimalExercises([supportingAreas[2], supportingAreas[1]], 4)
           .map(ex => applyDayTypeModifications(ex, 'compound'))
       },
       {
