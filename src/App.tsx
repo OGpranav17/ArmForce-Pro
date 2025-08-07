@@ -103,18 +103,35 @@ function App() {
         </div>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-3 gap-6 max-w-4xl mx-auto mb-16">
-          <div className="bg-gradient-to-br from-orange-500/20 to-orange-600/20 backdrop-blur-sm border border-orange-500/30 rounded-2xl p-6 text-center transform hover:scale-105 transition-all duration-300">
-            <div className="text-4xl font-black text-orange-400 mb-2">{exercises.length}+</div>
-            <div className="text-white font-semibold">Elite Exercises</div>
+        <div className="grid grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
+          <div className="group relative bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-orange-500/20 rounded-3xl p-8 text-center transform hover:scale-110 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/25 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute -top-10 -right-10 w-20 h-20 bg-orange-500/20 rounded-full blur-xl group-hover:bg-orange-500/30 transition-all duration-500"></div>
+            <div className="relative z-10">
+              <div className="text-5xl font-black bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent mb-3 group-hover:from-orange-300 group-hover:to-orange-400 transition-all duration-300">{exercises.length}+</div>
+              <div className="text-white font-bold text-lg group-hover:text-orange-100 transition-colors duration-300">Elite Exercises</div>
+              <div className="text-orange-400/70 text-sm mt-2 group-hover:text-orange-300/80 transition-colors duration-300">Proven techniques</div>
+            </div>
           </div>
-          <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-sm border border-blue-500/30 rounded-2xl p-6 text-center transform hover:scale-105 transition-all duration-300">
-            <div className="text-4xl font-black text-blue-400 mb-2">5</div>
-            <div className="text-white font-semibold">Focus Areas</div>
+          
+          <div className="group relative bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-blue-500/20 rounded-3xl p-8 text-center transform hover:scale-110 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/25 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute -top-10 -right-10 w-20 h-20 bg-blue-500/20 rounded-full blur-xl group-hover:bg-blue-500/30 transition-all duration-500"></div>
+            <div className="relative z-10">
+              <div className="text-5xl font-black bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent mb-3 group-hover:from-blue-300 group-hover:to-blue-400 transition-all duration-300">5</div>
+              <div className="text-white font-bold text-lg group-hover:text-blue-100 transition-colors duration-300">Focus Areas</div>
+              <div className="text-blue-400/70 text-sm mt-2 group-hover:text-blue-300/80 transition-colors duration-300">Targeted training</div>
+            </div>
           </div>
-          <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-6 text-center transform hover:scale-105 transition-all duration-300">
-            <div className="text-4xl font-black text-purple-400 mb-2">∞</div>
-            <div className="text-white font-semibold">Combinations</div>
+          
+          <div className="group relative bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-purple-500/20 rounded-3xl p-8 text-center transform hover:scale-110 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/25 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute -top-10 -right-10 w-20 h-20 bg-purple-500/20 rounded-full blur-xl group-hover:bg-purple-500/30 transition-all duration-500"></div>
+            <div className="relative z-10">
+              <div className="text-5xl font-black bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent mb-3 group-hover:from-purple-300 group-hover:to-purple-400 transition-all duration-300">∞</div>
+              <div className="text-white font-bold text-lg group-hover:text-purple-100 transition-colors duration-300">Combinations</div>
+              <div className="text-purple-400/70 text-sm mt-2 group-hover:text-purple-300/80 transition-colors duration-300">Endless possibilities</div>
+            </div>
           </div>
         </div>
 
