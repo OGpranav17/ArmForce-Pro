@@ -245,39 +245,48 @@ function App() {
 
         {/* Getting Started Message */}
         {!hasSelections && !showPlan && (
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 rounded-2xl shadow-2xl p-12">
-              <div className="relative mb-8">
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-blue-500/20 blur-2xl rounded-full"></div>
-                <Dumbbell className="h-24 w-24 text-orange-400 mx-auto relative animate-pulse" />
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl p-16 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-blue-500/5"></div>
+              <div className="absolute -top-20 -left-20 w-40 h-40 bg-orange-500/20 rounded-full blur-3xl"></div>
+              <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl"></div>
+              <div className="relative mb-10">
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-blue-500/20 blur-3xl rounded-full"></div>
+                <Dumbbell className="h-28 w-28 text-orange-400 mx-auto relative animate-pulse" />
               </div>
-              <h3 className="text-4xl font-bold bg-gradient-to-r from-orange-400 to-blue-400 bg-clip-text text-transparent mb-6">
+              <h3 className="relative text-5xl font-black bg-gradient-to-r from-orange-400 via-yellow-300 to-blue-400 bg-clip-text text-transparent mb-8 animate-pulse">
                 Ready to Unleash Your Power?
               </h3>
-              <p className="text-gray-300 text-lg leading-relaxed mb-8">
+              <p className="relative text-gray-300 text-xl leading-relaxed mb-10">
                 Select your available equipment and the areas you want to improve 
                 to receive <span className="text-orange-400 font-bold">personalized armwrestling exercise recommendations</span> and 
                 <span className="text-blue-400 font-bold"> structured workout plans</span>. Our system will match you with the most 
                 effective exercises and training schedules for your setup.
               </p>
-              <div className="grid grid-cols-3 gap-6 mt-8">
+              <div className="relative grid grid-cols-3 gap-8 mt-12">
                 <div className="text-center">
-                  <div className="bg-orange-500/20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-                    <span className="text-2xl font-bold text-orange-400">1</span>
+                  <div className="group relative bg-gradient-to-br from-orange-500/20 to-orange-600/20 backdrop-blur-xl border border-orange-500/30 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-orange-500/25 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <span className="relative text-3xl font-black text-orange-400 group-hover:text-orange-300 transition-colors duration-300">1</span>
                   </div>
-                  <p className="text-white font-semibold">Select Equipment</p>
+                  <p className="text-white font-bold text-lg">Select Equipment</p>
+                  <p className="text-orange-400/70 text-sm mt-1">Choose your tools</p>
                 </div>
                 <div className="text-center">
-                  <div className="bg-blue-500/20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-                    <span className="text-2xl font-bold text-blue-400">2</span>
+                  <div className="group relative bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-xl border border-blue-500/30 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-blue-500/25 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <span className="relative text-3xl font-black text-blue-400 group-hover:text-blue-300 transition-colors duration-300">2</span>
                   </div>
-                  <p className="text-white font-semibold">Choose Focus Areas</p>
+                  <p className="text-white font-bold text-lg">Choose Focus Areas</p>
+                  <p className="text-blue-400/70 text-sm mt-1">Target your goals</p>
                 </div>
                 <div className="text-center">
-                  <div className="bg-purple-500/20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-                    <span className="text-2xl font-bold text-purple-400">3</span>
+                  <div className="group relative bg-gradient-to-br from-purple-500/20 to-purple-600/20 backdrop-blur-xl border border-purple-500/30 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-purple-500/25 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <span className="relative text-3xl font-black text-purple-400 group-hover:text-purple-300 transition-colors duration-300">3</span>
                   </div>
-                  <p className="text-white font-semibold">Get Your Plan</p>
+                  <p className="text-white font-bold text-lg">Get Your Plan</p>
+                  <p className="text-purple-400/70 text-sm mt-1">Dominate the table</p>
                 </div>
               </div>
             </div>
