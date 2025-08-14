@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Header } from './components/Header';
+import { WorkoutTracker } from './components/WorkoutTracker';
 import { EquipmentSelector } from './components/EquipmentSelector';
 import { ImprovementSelector } from './components/ImprovementSelector';
 import { WorkoutPlanSelector } from './components/WorkoutPlanSelector';
@@ -9,9 +10,10 @@ import { Equipment, ImprovementArea } from './types';
 import { exercises } from './data/exercises';
 import { filterExercises } from './utils/exerciseFilter';
 import { generateWorkoutPlan } from './utils/workoutPlanGenerator';
-import { Search, Dumbbell, Zap, Trophy, Target, Flame } from 'lucide-react';
+import { Search, Dumbbell, Zap, Trophy, Target, Flame, Calendar } from 'lucide-react';
 
 function App() {
+  const [currentPage, setCurrentPage] = useState<'home' | 'tracker'>('home');
   const [equipment, setEquipment] = useState<Equipment>({
     gym: false,
     krassisPulley: false,
@@ -58,9 +60,35 @@ function App() {
 
   const canGeneratePlan = hasSelections && workoutDays > 0 && filteredExercises.length > 0;
 
+  if (currentPage === 'tracker') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+        <Header />
+        <WorkoutTracker 
+          onBackToHome={() => setCurrentPage('home')}
+          workoutPlan={workoutPlan}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
       <Header />
+      
+      {/* Tracker Button */}
+      <div className="fixed top-6 right-6 z-50">
+        <button
+          onClick={() => setCurrentPage('tracker')}
+          className="group relative bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white px-6 py-3 rounded-2xl font-bold text-lg shadow-2xl shadow-orange-500/50 hover:shadow-orange-400/60 transition-all duration-300 transform hover:scale-110 overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="flex items-center space-x-2 relative">
+            <Calendar className="h-5 w-5" />
+            <span>Tracker</span>
+          </div>
+        </button>
+      </div>
       
       <main className="container mx-auto px-4 py-8 relative z-10">
         {/* Hero Section */}
