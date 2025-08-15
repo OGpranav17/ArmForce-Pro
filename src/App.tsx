@@ -95,11 +95,6 @@ function App() {
         <div className="text-center mb-16 relative">
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-blue-500/20 blur-3xl rounded-full transform scale-150"></div>
           <div className="relative">
-            <div className="flex justify-center items-center space-x-4 mb-6">
-              <Flame className="h-12 w-12 text-orange-500 animate-bounce" />
-              <Trophy className="h-16 w-16 text-yellow-400 animate-pulse" />
-              <Flame className="h-12 w-12 text-orange-500 animate-bounce delay-500" />
-            </div>
             <h2 className="text-6xl font-black bg-gradient-to-r from-orange-400 via-yellow-300 to-orange-400 bg-clip-text text-transparent mb-6 animate-pulse">
               DOMINATE THE TABLE
             </h2>
