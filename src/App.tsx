@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Header } from './components/Header';
-import { WorkoutTracker } from './components/WorkoutTracker';
+import WorkoutTracker from './components/WorkoutTracker';
 import { EquipmentSelector } from './components/EquipmentSelector';
 import { ImprovementSelector } from './components/ImprovementSelector';
 import { WorkoutPlanSelector } from './components/WorkoutPlanSelector';
